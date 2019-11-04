@@ -1,7 +1,11 @@
 title: JPA with Spring Boot 2
 plan:
-- title: Welcome
-  statement: markdowns/welcome.md
+  - title: Spring Boot JPA
+    plan:
+      - title: Datasource Configuration
+        statement: markdowns/spring-boot-jpa/00-spring-boot-datasource-config.md
+      - title: Native SQL with EntityManager
+        statement: markdowns/spring-boot-jpa/01-native-sql-with-entity-manager.md
 projects:
   java:
     root: /java-project
