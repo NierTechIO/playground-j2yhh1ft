@@ -6,6 +6,8 @@ plan:
         statement: markdowns/spring-boot-jpa/00-spring-boot-datasource-config.md
       - title: Native SQL with EntityManager
         statement: markdowns/spring-boot-jpa/01-native-sql-with-entity-manager.md
+      - title: Native SQL with EntityManager and Parameters
+        statement: markdowns/spring-boot-jpa/02-native-sql-with-em-and-parameters.md
 projects:
   java:
     root: /java-project
