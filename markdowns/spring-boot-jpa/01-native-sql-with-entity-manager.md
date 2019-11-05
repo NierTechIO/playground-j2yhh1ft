@@ -55,11 +55,11 @@ int rowCount = query.executeUpdate();
 
 我們有張 Table，內容如下:
 
-| ID | FIRST_NAME | LAST_NAME | AGE |
-|:--:|:----------:|:---------:|:---:|
-|  1 |    Nier    |    Wang   |  29 |
-|  2 |     WL     |   Chang   |  20 |
-|  3 |     SJ     |    Pig    |  18 |
+| ID<br>NUMBER | FIRST_NAME<br>VARCHAR(20) | LAST_NAME<br>VARCHAR(20) | AGE<br>NUMBER |
+|:------------:|:-------------------------:|:------------------------:|:-------------:|
+|       1      |            Nier           |           Wang           |       29      |
+|       2      |             WL            |           Chang          |       20      |
+|       3      |             SJ            |            Pig           |       18      |
 
 請補完以下的 Class
 * 注入 EntityManager
