@@ -41,15 +41,28 @@ Query query = em.createNativeQuery(sql)
 List<String> queryResult = (List<String>) query.getResultList();
 ```
 
+## @Transactional
+
+當你直接執行 executeUpdate() 的時候，可能會發現拋出了一個 Exception，告訴你 UPDATE 必須要有 transaction。
+
+Transaction 後面會再詳細討論，這邊先說明如何解決這個問題。只需要在有 executeUpdate() 的 **public** method 上面標注 ```@Transactional``` 就可以讓這整個 method（除非特別再寫 Transactional annotation，否則連往下叫的子 method 都包含在內）都會被同一個 Transaction 包起來，這樣就可以正常執行 executeUpdate() 了。
+
+```java
+@Transactional
+public void update() {
+    em.createNativeQuery("UPDATE USERS SET AGE = 25 WHERE ID = 1").executeUpdate();
+}
+```
+
 ## 練習
 
 我們有張 Table，初始內容如下:
 
-| ID | FIRST_NAME | LAST_NAME | AGE |
-|:--:|:----------:|:---------:|:---:|
-|  1 |    Nier    |    Wang   |  29 |
-|  2 |     WL     |   Chang   |  20 |
-|  3 |     SJ     |    Pig    |  18 |
+| ID<br>NUMBER | FIRST_NAME<br>VARCHAR(20) | LAST_NAME<br>VARCHAR(20) | AGE<br>NUMBER |
+|:------------:|:-------------------------:|:------------------------:|:-------------:|
+|       1      |            Nier           |           Wang           |       29      |
+|       2      |             WL            |           Chang          |       20      |
+|       3      |             SJ            |            Pig           |       18      |
 
 請根據 TODO 完成 methods
 
