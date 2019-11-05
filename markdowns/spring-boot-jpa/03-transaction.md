@@ -23,11 +23,9 @@ INSERT INTO USERS (ID, NAME) VALUES (1, 'Yoyo');
 
 這些對於實際應用中是非常常見的，例如我們要儲存使用者的資料，我們可能會操作不同的 Table，把使用者的資料存到不同的 Table 中。如果其中一個 SQL 因為某些原因失敗了，我們不希望將存到一半的資料留在 DB 中，不然可能會造成資料不一致甚至錯誤的狀況。
 
-例如一個管理借書的圖書系統，我們可能會先將 BOOK 的 IS_BORROWED 設成 'Y'，然後對 USER 的 BORROW_BOOK_ID 設定為借出書本的 ID。
-如果我們成功的將 IS_BORROWED 設成 'Y'，但是在插入一筆 USER 的 BORROW_BOOK_ID 的時候出錯了，如果沒有使用 transaction 來做 rollback，就會變成書已經被借出，但是找不到被誰借走的狀況。
+例如一個管理借書的圖書系統，我們可能會先將 BOOK 的 IS_BORROWED 設成 'Y'，然後對 USER 的 BORROW_BOOK_ID 設定為借出書本的 ID。如果我們成功的將 IS_BORROWED 設成 'Y'，但是在插入一筆 USER 的 BORROW_BOOK_ID 的時候出錯了，如果沒有使用 transaction 來做 rollback，就會變成書已經被借出，但是找不到被誰借走的狀況。
 
-然而我們需要非常小心 Transaction 的 scope。
-例如寫 log → 寄信，如果寄信失敗要 rollback，但只 rollback 這次寄信的 UPDATE SQL，而不要把之前成功寄信的 UPDATE SQL 都一起 rollback 了。
+然而我們需要非常小心 Transaction 的 scope。例如寫 log → 寄信，如果寄信失敗要 rollback，但只 rollback 這次寄信的 UPDATE SQL，而不要把之前成功寄信的 UPDATE SQL 都一起 rollback 了。
 
 ## Transaction control in Spring Boot
 
@@ -79,14 +77,17 @@ Transaction propagation mode 分成以下 6 種。
 當一個 Transaction 結束的時候就會 commit 或 rollback，主要是看 Transaction 有沒有途中被標記為 rollback。
 
 在預設的情況下，當在一個被標注 ```@Transaction``` 的 method 中朝外拋出 Unchecked Exception 的時候，就會將 Transaction 標記為 rollback。
+
 相反的，如果是拋出 checked Exception，就不會標記為 rollback。
 
 一但 Transaction 被標記為 rollback 就沒救了，在最後如果想要 commit 他就會出現 ```UnexpectedRollbackException```。
 
 因此，如果沒有被標記為 ```@Transactional``` 的 method 拋出了 Unchecked Exception，即便他其實身處於一個 Transaction 中（call 他的人有 Transaction 之類的），也不會標記為 rollback。
+
 Spring Boot 會在拋出 Exception 的時候檢查該 method 有沒有被標記為 ```@Transactional```，有的話才會把現存的 Transaction 標記為 rollback。
 
 如果想要特別指定拋出哪些 Unchecked Exception 的時候不要 rollback，可以在 ```@Transcational``` 標注中加上 ```noRollbackFor```。
+
 相反的，如果想要指定拋出哪些 Checked Exception 的時候也要 rollback，可以加上 ```rollbackFor```。
 
 ```java
@@ -103,23 +104,23 @@ TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 ### Transaction 的 isolation
 
 * READ_UNCOMMITED
-不同的 Transaction 間可以拿到彼此 UPDATE 的資料，就物還沒有被 committed。
-當 Transaction T1 去 SELECT / UPDATE Table A1，Transaction T2 也可以去 SELECT / UPDATE Table A1。
-當 T1 去 Update A1 之後，即使 T1 還沒 commit，T2 就可以 SELECT 到 A1 新的資料，但是問題是如果 T1 之後 rollback 了，T2 手中留著那筆 A1 的資料就是錯誤的。
+    * 不同的 Transaction 間可以拿到彼此 UPDATE 的資料，就物還沒有被 committed。
+    * 當 Transaction T1 去 SELECT / UPDATE Table A1，Transaction T2 也可以去 SELECT / UPDATE Table A1。
+    * 當 T1 去 Update A1 之後，即使 T1 還沒 commit，T2 就可以 SELECT 到 A1 新的資料，但是問題是如果 T1 之後 rollback 了，T2 手中留著那筆 A1 的資料就是錯誤的。
 
 * READ_COMMITTED (預設)
-不同的 Transaction 間可以拿到彼此已經 committed 的資料。
-當 Transaction T1 去 SELECT / UPDATE Table A1，Transaction T2 也可以去 SELECT / UPDATE Table A1。
-而在 T1 去 Update A1 之後，T1 可以拿到 Update 之後的結果，而在 T1 commit 之前，T2 是無法獲得 T1 的 Update 結果，要等到 T1 commit 之後，T2 再去 SELECT 就可以拿到新的資料。
+    * 不同的 Transaction 間可以拿到彼此已經 committed 的資料。
+    * 當 Transaction T1 去 SELECT / UPDATE Table A1，Transaction T2 也可以去 SELECT / UPDATE Table A1。
+    * 而在 T1 去 Update A1 之後，T1 可以拿到 Update 之後的結果，而在 T1 commit 之前，T2 是無法獲得 T1 的 Update 結果，要等到 T1 commit 之後，T2 再去 SELECT 就可以拿到新的資料。
 
 * REPEATABLE_READ
-不同的 Transaction 間無法拿到彼此 UPDATE 的資料。
-當 Transaction T1 去 SELECT / UPDATE Table A1，Transaction T2 也可以去 SELECT / UPDATE Table A1。
-然而在同一個 Transaction 中的 READ 除非被**自己**修改，否則不管其他的 transaction 有沒有動過，有沒有 commit，都不會影響到 READ 的值。
+    * 不同的 Transaction 間無法拿到彼此 UPDATE 的資料。
+    * 當 Transaction T1 去 SELECT / UPDATE Table A1，Transaction T2 也可以去 SELECT / UPDATE Table A1。
+    * 然而在同一個 Transaction 中的 READ 除非被**自己**修改，否則不管其他的 transaction 有沒有動過，有沒有 commit，都不會影響到 READ 的值。
 
 * SERIALIZABLE
-Transaction 對 Table 的 WRITE 會 lock Table 直到 commit。
-因此可以保證所有的資料都不會是 dirty，但效率最差。
+    * Transaction 對 Table 的 WRITE 會 lock Table 直到 commit。
+    * 因此可以保證所有的資料都不會是 dirty，但效率最差。
 
 ### Spring Boot 的 AOP 實現對 @Transactional 的影響
 
@@ -145,11 +146,13 @@ public class ClassA() {
 ```
 
 像上面的 code，假設我們呼叫 ```classA.methodA()``` 會拋出 ```TransactionRequiredException```，因為從同一個 class 中的 methodA 呼叫 methodB 並不會觸發 ```@Transactional```，因此沒有 Transaction。
+
 如果直接呼叫 ```classA.methodB()```，就會觸發 ```@Transactional``` 並正常執行。
 
 ## 為什麼沒有 Transaction 也能做 Read Only 的 SQL，像是 SELECT？
 
 其實不管你有沒有宣告 Transaction，任何的 DB SQL 都會被包在 Transaction 裡面。假設你沒有告訴 DB 什麼時候開始 Transaction，什麼時候結束，每一個 SQL statement 都會被各自獨立的 Transaction 包起來。
+
 所以，照理說 UPDATE 的 SQL 也應該可以被 DB 執行的，但 Spring Boot 的 Transaction handler 在 proxy 層會檢查這件事情並拋出 Exception。
 
 ## 練習
