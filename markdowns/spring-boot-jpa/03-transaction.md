@@ -14,7 +14,7 @@ Transaction 是用來管理 SQL 執行的相依性。如果有一串 SQL 處理�
 INSERT INTO USERS (ID, NAME) VALUES (1, 'Nier');
 -- 成功 Insert
 SELECT * FROM USERS WHERE ID = 1;
--- 上面這一句，如果在同一個 Transaction 中話，可以撈到直
+-- 上面這一句，如果在同一個 Transaction 中話，可以撈到值
 -- 如果上面這句是在另一個 Transaction 中執行的話，就撈不到這個新的值
 INSERT INTO USERS (ID, NAME) VALUES (1, 'Yoyo');
 -- Insert 失敗，因為 ID 重複
