@@ -74,6 +74,7 @@ public class Student {
 試著將之前的 Table 寫成 Entity 吧
 
 Table Name: USERS
+
 Primary Key: ID, AUTO_INCREMENT
 
 | ID<br>NUMBER | FIRST_NAME<br>VARCHAR(20) | LAST_NAME<br>VARCHAR(20) | AGE<br>NUMBER |
