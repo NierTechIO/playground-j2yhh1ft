@@ -58,6 +58,8 @@ public void update() {
 
 我們有張 Table，初始內容如下:
 
+Table Name: USERS
+
 | ID<br>NUMBER | FIRST_NAME<br>VARCHAR(20) | LAST_NAME<br>VARCHAR(20) | AGE<br>NUMBER |
 |:------------:|:-------------------------:|:------------------------:|:-------------:|
 |       1      |            Nier           |           Wang           |       29      |
