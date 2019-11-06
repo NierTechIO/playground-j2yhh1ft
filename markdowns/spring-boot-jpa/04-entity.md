@@ -13,7 +13,7 @@ Entity 是用 Java POJO 來表示 DB table 的一種方法。POJO 的 fields 代
     * 如果是日期，則要再加上 ```@Temporal(TemporalType.DATE)``` 或 ```@Temporal(TemporalType.TIMESTAMP)```，前者只有日期，後者包含日期與時間
     * 如果該欄位是 ID，則需要加上 ```@Id```
     * 如果該欄位是自動產生的值，則需要加上 ```@GeneratedValue```，並設定產生值的 strategy
-         * 假設是 MySQL 或 H2 的 AUTO_INCREMENT，這邊可以寫上 ```@GeneratedValue(strategy=GenerationType.AUTO)```
+         * 假設是 MySQL 或 H2 的 AUTO_INCREMENT，這邊可以寫上 ```@GeneratedValue(strategy=GenerationType.IDENTITY)```
          * 假設是用 Oracle 的 SEQUENCE 來實做，則要補上 ```@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="GENERATOR_NAME")```
          * Generator 要再額外定義，例如 ```@SequenceGenerator(name="GENERATOR_NAME", sequenceName="SEQ_NAME" allocationSize=1, intialValue=1)```
 5. Field 的 Type 根據 DB column type 決定
@@ -35,7 +35,7 @@ public class Student {
     private Date birthDate;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     // Oracle Sequence 用下面兩行的寫法
     // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GENERATOR_NAME")
     // @SequenceGenerator(name = "GENERATOR_NAME", sequenceName = "SEQ_NAME", allocationSize = 1, initialValue = 1)
@@ -105,6 +105,29 @@ public class Account {
 
     @Id
     @Column(name = "ACCOUNT_TYPE")
+    public String getAccountType() {
+        return accountType;
+    }
+ 
+    // other getters and setters
+}
+```
+
+:::
+
+### 試著將之前的 Table 寫成 Entity 吧
+
+Table Name: USERS
+
+Primary Key: ID, AUTO_INCREMENT
+
+| ID<br>NUMBER | FIRST_NAME<br>VARCHAR(20) | LAST_NAME<br>VARCHAR(20) | AGE<br>NUMBER |
+|:------------:|:-------------------------:|:------------------------:|:-------------:|
+|       1      |            Nier           |           Wang           |       29      |
+|       2      |             WL            |           Chang          |       20      |
+|       3      |             SJ            |            Pig           |       18      |
+
+@[Complete the Entity class]({"stubs": ["src/main/java/com/example/training/entity/Users.java"], "command": "com.example.training.entity.UsersTest#checkEntity"})e = "ACCOUNT_TYPE")
     public String getAccountType() {
         return accountType;
     }
