@@ -127,27 +127,4 @@ Primary Key: ID, AUTO_INCREMENT
 |       2      |             WL            |           Chang          |       20      |
 |       3      |             SJ            |            Pig           |       18      |
 
-@[Complete the Entity class]({"stubs": ["src/main/java/com/example/training/entity/Users.java"], "command": "com.example.training.entity.UsersTest#checkEntity"})e = "ACCOUNT_TYPE")
-    public String getAccountType() {
-        return accountType;
-    }
- 
-    // other getters and setters
-}
-```
-
-:::
-
-### 試著將之前的 Table 寫成 Entity 吧
-
-Table Name: USERS
-
-Primary Key: ID, AUTO_INCREMENT
-
-| ID<br>NUMBER | FIRST_NAME<br>VARCHAR(20) | LAST_NAME<br>VARCHAR(20) | AGE<br>NUMBER |
-|:------------:|:-------------------------:|:------------------------:|:-------------:|
-|       1      |            Nier           |           Wang           |       29      |
-|       2      |             WL            |           Chang          |       20      |
-|       3      |             SJ            |            Pig           |       18      |
-
 @[Complete the Entity class]({"stubs": ["src/main/java/com/example/training/entity/Users.java"], "command": "com.example.training.entity.UsersTest#checkEntity"})
