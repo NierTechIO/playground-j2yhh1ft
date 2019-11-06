@@ -10,6 +10,8 @@ plan:
         statement: markdowns/spring-boot-jpa/02-native-sql-with-em-and-parameters.md
       - title: Transation
         statement: markdowns/spring-boot-jpa/03-transaction.md
+      - title: Entity
+        statement: markdowns/spring-boot-jpa/04-entity.md
 projects:
   java:
     root: /java-project
