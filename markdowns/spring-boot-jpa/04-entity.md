@@ -71,7 +71,51 @@ public class Student {
 
 ## 練習
 
-試著將之前的 Table 寫成 Entity 吧
+### 如果 table 的 primary key 是 composite key 的情況，要怎麼給 ID 呢？
+
+建議可以先自己 google 看看，做法其實不只一種。
+
+::: Entity with Composite Key
+
+答案參考自 https://www.baeldung.com/jpa-composite-primary-keys
+
+```java
+// 把 Id 額外定義為另外一個 Class
+// 請注意一定要 implement Serializable
+public class AccountId implements Serializable {
+    private String accountNumber;
+    private String accountType;
+
+    // getters & setters
+}
+
+// Account Entity
+@Entity
+@IdClass(AccountId.class)
+public class Account {
+    private String accountNumber;
+    private String accountType;
+    // other fields
+
+    @Id
+    @Column(name = "ACCOUNT_NUMBER")
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    @Id
+    @Column(name = "ACCOUNT_TYPE")
+    public String getAccountType() {
+        return accountType;
+    }
+ 
+    // other getters and setters
+}
+```
+
+:::
+
+### 試著將之前的 Table 寫成 Entity 吧
 
 Table Name: USERS
 
